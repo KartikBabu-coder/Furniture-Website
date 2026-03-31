@@ -1,0 +1,112 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Bedside Table",
+      "image": "images/product-1.jpg",
+      "price": 4999,
+      "originalPrice": 6999,
+      "rating": 4.5,
+      "description": "Elegant wooden bedside table with 2 drawers, perfect for modern bedrooms."
+    },
+    {
+      "id": 2,
+      "name": "Sofa & Chair",
+      "image": "images/product-2.jpg",
+      "price": 15999,
+      "originalPrice": 20999,
+      "rating": 4.5,
+      "description": "Comfortable 3-seater sofa with matching accent chair, premium fabric."
+    },
+    {
+      "id": 3,
+      "name": "Dining Table Set",
+      "image": "images/product-3.jpg",
+      "price": 18999,
+      "originalPrice": 24999,
+      "rating": 4,
+      "description": "6-seater dining table with comfortable chairs, solid wood construction."
+    },
+    {
+      "id": 4,
+      "name": "Bookshelf",
+      "image": "images/product-4.jpg",
+      "price": 7999,
+      "originalPrice": 10999,
+      "rating": 4,
+      "description": "5-tier bookshelf with modern design, perfect for living room or study."
+    },
+    {
+      "id": 5,
+      "name": "Computer Desk",
+      "image": "images/product-5.jpg",
+      "price": 8999,
+      "originalPrice": 12999,
+      "rating": 4.5,
+      "description": "Ergonomic computer desk with drawer, cable management, and monitor shelf."
+    },
+    {
+      "id": 6,
+      "name": "Shoe Rack",
+      "image": "images/product-6.jpg",
+      "price": 3499,
+      "originalPrice": 4999,
+      "rating": 4,
+      "description": "3-tier shoe rack with modern design, holds up to 18 pairs of shoes."
+    },
+    {
+      "id": 7,
+      "name": "Kids Study Table",
+      "image": "images/product-7.png",
+      "price": 5999,
+      "originalPrice": 7999,
+      "rating": 4.5,
+      "description": "Adjustable height study table for kids with storage compartments and lamp."
+    },
+    {
+      "id": 8,
+      "name": "Bed",
+      "image": "images/product-8.png",
+      "price": 24999,
+      "originalPrice": 29999,
+      "rating": 4.5,
+      "description": "King-size wooden bed frame with headboard, sturdy and stylish."
+    },
+    {
+      "id": 9,
+      "name": "Reception Desks",
+      "image": "images/product-9.png",
+      "price": 9999,
+      "originalPrice": 12999,
+      "rating": 4.5,
+      "description": "Modern reception desk with cable management and storage compartments."
+    },
+    {
+      "id": 10,
+      "name": "Wooden Almirah",
+      "image": "images/product-10.png",
+      "price": 15999,
+      "originalPrice": 18999,
+      "rating": 4.5,
+      "description": "Spacious 3-door almirah with mirror, adjustable shelves, and lock."
+    },
+    {
+      "id": 11,
+      "name": "TV Unit",
+      "image": "images/product-11.png",
+      "price": 8999,
+      "originalPrice": 11999,
+      "rating": 4.5,
+      "description": "Wall-mounted TV unit with open shelves and cabinet storage."
+    },
+    {
+      "id": 12,
+      "name": "Corner Sofa",
+      "image": "images/product.jpg",
+      "price": 29999,
+      "originalPrice": 39999,
+      "rating": 5,
+      "description": "L-shaped corner sofa with premium fabric, spacious seating for 6-7 people."
+    }
+  ]
+}

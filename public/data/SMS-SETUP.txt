@@ -1,0 +1,84 @@
+==============================================
+SMS NOTIFICATION SETUP GUIDE
+Ananya House of Furniture
+==============================================
+
+When customer places an order, they receive an SMS confirmation.
+
+OPTION 1: Fast2SMS (RECOMMENDED - Free tier available)
+========================================================
+
+1. Go to https://www.fast2sms.com
+2. Sign up / Login
+3. Go to Dashboard > Developer API
+4. Copy your API Key
+
+5. Open: js/script.js
+6. Find this line (around line 856):
+   const SMS_API_KEY = 'YOUR_FAST2SMS_API_KEY';
+
+7. Replace with your actual API key:
+   const SMS_API_KEY = 'YOUR_ACTUAL_API_KEY';
+
+8. That's it! SMS will be sent automatically.
+
+Note: Fast2SMS free tier has 50 SMS/day limit.
+For production, upgrade to paid plan for unlimited SMS.
+
+
+OPTION 2: Google Apps Script (FREE but needs setup)
+====================================================
+
+1. Go to https://script.google.com
+2. Create new project
+3. Paste this code:
+
+function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+  const phone = data.phone;
+  const message = data.message;
+
+  // Using Way2SMS API (free)
+  // You need to set WAY2SMS credentials in Properties
+  const scriptProps = PropertiesService.getScriptProperties();
+  const username = scriptProps.getProperty('WAY2SMS_USER');
+  const password = scriptProps.getProperty('WAY2SMS_PASS');
+
+  const url = 'https://www.way2sms.com/sendSMS';
+  const payload = {
+    'mobile': phone,
+    'message': message,
+    'sendername': 'ANANYA',
+    'username': username,
+    'password': password
+  };
+
+  // Note: Way2SMS free API is unreliable
+  // Consider paid options for production
+}
+
+Note: Free SMS APIs are unreliable. For business use,
+Fast2SMS or paid gateway is recommended.
+
+
+==============================================
+SMS TEMPLATE (Auto-sent after order)
+==============================================
+
+Customer receives:
+-----------------
+Dear [Name], Thank you for your order!
+Order ID: [ORDER_ID]
+Total: Rs.[AMOUNT]
+We will call you within 24 hours to confirm delivery.
+- Ananya House of Furniture
+
+
+==============================================
+TESTING SMS
+==============================================
+
+1. Add API key to script.js
+2. Place a test order
+3. Check customer's phone for SMS
+4. Check Fast2SMS dashboard for SMS status

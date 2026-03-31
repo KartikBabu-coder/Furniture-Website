@@ -32,15 +32,7 @@
 
         <a href="#" class="logo"> <i class="fas fa-chair"></i> furniture</a>
 
-        <nav class="navbar">
-            <a href="#home">home</a>
-            <a href="#about">about</a>
-            <a href="#services">services</a>
-            <a href="#product">product</a>
-            <a href="#team">team</a>
-            <!-- <a href="#blog">blogs</a> -->
-            <a href="#contact">contact</a>
-        </nav>
+        <nav class="navbar" id="navbar"></nav>
 
         <!-- <div class="icons">
             <div id="cart-btn" class="fas fa-nothing"></div>
@@ -48,7 +40,9 @@
             <div id="menu-btn" class="fas fa-bars"></div>
         </div> -->
         <div class="icons">
-            <div id="cart-btn" class="fas fa-shopping-cart"></div> <!-- Shopping Cart Icon -->
+            <div id="cart-btn" class="fas fa-shopping-cart">
+                <span id="cart-count"></span>
+            </div> <!-- Shopping Cart Icon -->
             <div id="account-btn" class="fas fa-user"></div> <!-- Account Icon -->
             <div id="menu-btn" class="fas fa-bars"></div>
         </div>
@@ -59,46 +53,9 @@
 
     <!-- shopping cart -->
 
-    <div class="cart-items-container">
-
+    <div class="cart-items-container" id="cart-items">
         <div id="close" class="fas fa-times"></div>
-
-        <div class="cart-item">
-            <span class="fas fa-times"></span>
-            <img src="images/cart-img-1.jpg" alt="">
-            <div class="content">
-                <h3>cart item 01</h3>
-                <div class="price">$18.99/-</div>
-            </div>
-        </div>
-
-        <div class="cart-item">
-            <span class="fas fa-times"></span>
-            <img src="images/cart-img-2.jpg" alt="">
-            <div class="content">
-                <h3>cart item 02</h3>
-                <div class="price">$18.99/-</div>
-            </div>
-        </div>
-
-        <div class="cart-item">
-            <span class="fas fa-times"></span>
-            <img src="images/cart-img-3.jpg" alt="">
-            <div class="content">
-                <h3>cart item 03</h3>
-                <div class="price">$18.99/-</div>
-            </div>
-        </div>
-
-        <div class="cart-item">
-            <span class="fas fa-times"></span>
-            <img src="images/cart-img-4.jpg" alt="">
-            <div class="content">
-                <h3>cart item 04</h3>
-                <div class="price">$18.99/-</div>
-            </div>
-        </div>
-        <a href="#" class="btn"> checkout</a>
+        <a href="#" class="btn">checkout</a>
     </div>
 
 
@@ -146,44 +103,7 @@
         <div class="swiper-button-next"></div>
 
         <div class="swiper home-slider">
-            <div class="swiper-wrapper">
-
-                <div class="swiper-slide slide" style="background: url(images/home-slide1.jpg) no-repeat;">
-                    <div class="content">
-                        <h3>we just make a perfect furniture for home</h3>
-                        <span style="color: yellow;">with you since 2012</span>
-                    </div>
-                </div>
-
-                <div class="swiper-slide slide" style="background: url(images/home-slide2.jpg) no-repeat;">
-                    <div class="content">
-                        <h3>Creating flawless furniture for your home, where beauty meets utility</h3>
-                        <span style="color: yellow;">with you since 2012</span>
-                    </div>
-                </div>
-
-                <div class="swiper-slide slide" style="background: url(images/home-slide3.jpg) no-repeat;">
-                    <div class="content">
-                        <h3>Our expertise lies in crafting impeccable home furnishings</h3>
-                        <span style="color: yellow;">with you since 2012</span>
-                    </div>
-                </div>
-
-                <div class="swiper-slide slide" style="background: url(images/home-slide4.jpg) no-repeat;">
-                    <div class="content">
-                        <h3>Designing and building impeccable furniture to enhance your living space</h3>
-                        <span style="color: yellow;">with you since 2012</span>
-                    </div>
-                </div>
-
-                <div class="swiper-slide slide" style="background: url(images/home-slide5.jpg) no-repeat;">
-                    <div class="content">
-                        <h3>Bringing perfection to home furniture, where every piece is a masterpiece</h3>
-                        <span style="color: yellow;">with you since 2012</span>
-                    </div>
-                </div>
-
-            </div>
+            <div class="swiper-wrapper" id="slider-wrapper"></div>
         </div>
 
     </section>
@@ -201,27 +121,7 @@
                 <img src="images/about.jpg" alt="">
             </div>
 
-            <div class="content">
-                <span>welcome to Ananya House of Furniture</span>
-                <h3>We Enhance the Beauty of Your Home</h3>
-                <p>Since the past seven years, we have been passionate about making furniture that transforms spaces.
-                    Each piece is painstakingly crafted by our skilled artisans to ensure durability and timeless
-                    beauty. We back eco-friendly practices and neighborhood communities. Let Us Redefine Your Home by
-                    Choosing From Our Collections Today.
-                </p>
-                <!-- Video Section -->
-                <div class="video-frame">
-                    <div class="video-container">
-                        <video controls>
-                            <source src="videos/sample.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                </div>
-                <!-- End of Video Section -->
-
-                <a href="#" class="btn">read more</a>
-            </div>
+            <div class="content" id="about-content"></div>
 
         </div>
 
@@ -236,59 +136,7 @@
 
         <h1 class="heading">our <span> services</span></h1>
 
-        <div class="box-container">
-
-            <div class="box">
-                <img src="images/service-1.png" alt="">
-                <h3>Custom Furniture Design</h3>
-                <p>We specialize in crafting custom-made furniture that fits perfectly into your home’s unique layout.
-                    From bespoke sofas to tailor-made dining tables, our team will work with you to bring your vision to
-                    life.</p>
-                <a href="#" class="btn"> read more</a>
-            </div>
-
-            <div class="box">
-                <img src="images/service-2.png" alt="">
-                <h3>Home & Office Furniture</h3>
-                <p>Explore a wide range of home and office furniture to suit your needs, including:</p>
-                <b>Living Room:</b> <span>Sofas, coffee tables, TV units</span><br>
-                <b>Bedroom:</b> <span>Beds, wardrobes, dressers</span><br>
-                <b>Office:</b> <span>Desks, chairs, storage units</span><br>
-                <a href="#" class="btn">Read more</a>
-            </div>
-
-
-            <div class="box">
-                <img src="images/service-3.png" alt="">
-                <h3>Interior Design Consultation</h3>
-                <p>Need help decorating your space?
-                    We provide interior design consultations to help you choose the perfect furniture and layout to
-                    transform your home or office.</p>
-                <a href="#" class="btn"> read more</a>
-            </div>
-            <div class="box">
-                <img src="images/service-4.png" alt="">
-                <h3>Furniture Repair & Restoration</h3>
-                <p>We offer furniture repair and restoration services to keep your beloved pieces in excellent
-                    condition,
-                    whether it’s fixing a broken leg or restoring a vintage piece.</p>
-                <a href="#" class="btn"> read more</a>
-            </div>
-            <div class="box">
-                <img src="images/service-5.png" alt="">
-                <h3>Free Delivery & Installation</h3>
-                <p>Our team ensures hassle-free delivery and installation of your furniture,
-                    with no additional charges. We take care of everything from setup to cleanup.</p>
-                <a href="#" class="btn"> read more</a>
-            </div>
-            <div class="box">
-                <img src="images/service-6.png" alt="">
-                <h3>Customer Support</h3>
-                <p>Our dedicated customer support team is available to assist you with any queries,
-                    orders, or after-sales service to ensure you’re fully satisfied with your experience.</p>
-                <a href="#" class="btn"> read more</a>
-            </div>
-        </div>
+        <div class="box-container" id="services-container"></div>
 
     </section>
 
@@ -300,105 +148,7 @@
 
         <h1 class="heading" id="heading">our <span> products</span></h1>
 
-        <div class="box-container">
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-eye"></a>
-                <img src="images/product-1.jpg" alt="">
-                <h3>Bedside Table</h3>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-                <div class="price">4,999 <span>6,999</span></div>
-                <a href="#" class="btn">add to cart</a>
-            </div>
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-eye"></a>
-                <img src="images/product-2.jpg" alt="">
-                <h3>Sofa & Chair</h3>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-                <div class="price">15,999 <span>20,999</span></div>
-                <a href="#" class="btn">add to cart</a>
-            </div>
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-eye"></a>
-                <img src="images/product-8.png" alt="">
-                <h3>Bed</h3>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-                <div class="price">24,999 <span>29,999</span></div>
-                <a href="#" class="btn">add to cart</a>
-            </div>
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-eye"></a>
-                <img src="images/product-9.png" alt="">
-                <h3>Reception Desks</h3>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-                <div class="price">9,999 <span>$12,999</span></div>
-                <a href="#" class="btn">add to cart</a>
-            </div>
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-eye"></a>
-                <img src="images/product-10.png" alt="">
-                <h3>Wooden Almirah</h3>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-                <div class="price">15,999 <span>18,999</span></div>
-                <a href="#" class="btn">add to cart</a>
-            </div>
-
-            <div class="box">
-                <a href="#" class="fas fa-heart"></a>
-                <a href="#" class="fas fa-eye"></a>
-                <img src="images/product-11.png" alt="">
-                <h3>TV Unit</h3>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-                <div class="price">8,999 <span>11,999</span></div>
-                <a href="#" class="btn">add to cart</a>
-            </div>
-
-        </div>
+        <div class="box-container" id="products-container"></div>
 
     </section>
 
@@ -412,60 +162,7 @@
 
         <div class="swiper team-slider">
 
-            <div class="swiper-wrapper">
-
-                <div class="swiper-slide slide">
-                    <div class="image ">
-                        <img src="images/team-2.jpg" alt="" class="border-size">
-                        <div class="share">
-                            <a href="https://www.facebook.com/profile.php?id=100009901991682&mibextid=ZbWKwL"
-                                class="fab fa-facebook-f"></a>
-                            <a href="https://x.com/RAMESHK41243561?t=FbeG012Bhdo--6srXgVeuQ&s=09"
-                                class="fab fa-twitter"></a>
-                            <a href="https://www.instagram.com/prajapati_ramesh_18b?igsh=YzljYTk1ODg3Zg=="
-                                class="fab fa-instagram"></a>
-                            <a href="https://www.linkedin.com/in/ramesh-kumar-7ba5311a5" class="fab fa-linkedin"></a>
-                        </div>
-                    </div>
-                    <div class="content">
-                        <h3>Ramesh</h3>
-                        <span>Software Engineer</span>
-                    </div>
-                </div>
-
-                <div class="swiper-slide slide">
-                    <div class="image">
-                        <img src="images/team-5.png" alt="" class="border-size">
-                        <div class="share">
-                            <a href="#" class="fab fa-facebook-f"></a>
-                            <a href="#" class="fab fa-twitter"></a>
-                            <a href="#" class="fab fa-instagram"></a>
-                            <a href="#" class="fab fa-linkedin"></a>
-                        </div>
-                    </div>
-                    <div class="content">
-                        <h3>Pirtesh Koli</h3>
-                        <span>Architect/Interior Designer</span>
-                    </div>
-                </div>
-
-                <div class="swiper-slide slide">
-                    <div class="image">
-                        <img src="images/team-6.png" alt="" class="border-size">
-                        <div class="share">
-                            <a href="#" class="fab fa-facebook-f"></a>
-                            <a href="#" class="fab fa-twitter"></a>
-                            <a href="#" class="fab fa-instagram"></a>
-                            <a href="#" class="fab fa-linkedin"></a>
-                        </div>
-                    </div>
-                    <div class="content">
-                        <h3>latien</h3>
-                        <span>designer</span>
-                    </div>
-                </div>
-
-            </div>
+            <div class="swiper-wrapper" id="team-wrapper"></div>
 
         </div>
 
@@ -479,57 +176,7 @@
 
         <h1 class="heading"> our <span> blogs</span></h1>
 
-        <div class="box-container">
-
-            <div class="box">
-                <div class="image">
-                    <img src="images/blog-1.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>Complete Guide to Buying the Right Bed for Your Bedroom</h3>
-                    <p>Offers practical advice on selecting the perfect bed size, material, and design based on client
-                        needs and space.</p>
-                    <a href="#" class="btn"> read more</a>
-                    <div class="icons">
-                        <a href="#"> <i class="fas fa-calendar"></i> 5th july, 2023 </a>
-                        <a href="#"> <i class="fas fa-user"></i> by admin </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="image">
-                    <img src="images/blog-2.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>Furniture Care 101: Tips to Maintain Wooden Furniture</h3>
-                    <p>Helps clients keep their furniture in top condition with easy maintenance tips,
-                        enhancing the longevity of their investment..</p>
-                    <a href="#" class="btn"> read more</a>
-                    <div class="icons">
-                        <a href="#"> <i class="fas fa-calendar"></i> 10th March, 2023 </a>
-                        <a href="#"> <i class="fas fa-user"></i> by admin </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="image">
-                    <img src="images/blog-3.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>5 Simple Ways to Make a Small Space Look Bigger with Furniture</h3>
-                    <p>Provides smart furniture arrangement ideas that maximize space,
-                        ideal for clients with smaller homes or apartments.</p>
-                    <a href="#" class="btn"> read more</a>
-                    <div class="icons">
-                        <a href="#"> <i class="fas fa-calendar"></i> 11th April, 2023 </a>
-                        <a href="#"> <i class="fas fa-user"></i> by admin </a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        <div class="box-container" id="blog-container"></div>
 
     </section>
 
@@ -561,18 +208,7 @@
                 <span>Email</span>
                 <input type="email" class="box" name="email" required>
                 <span>work type</span>
-                <select class="box" id="project-type" name="project-type" required>
-                    <option value="custom">Living Room Furniture</option>
-                    <option value="renovation">Bedroom Furniture</option>
-                    <option value="consultation">Dining Room Furniture</option>
-                    <option value="consultation">Office Furniture</option>
-                    <option value="consultation">Outdoor Furniture</option>
-                    <option value="consultation">Specialty Furniture</option>
-
-                    <option value="other">Other</option>
-
-
-                </select>
+                <select class="box" id="project-type" name="project-type" required></select>
                 <span>Message</span>
                 <textarea class="box" name="message" cols="30" rows="10" required></textarea>
 
@@ -605,31 +241,40 @@
                 <a href="#contact"> <i class="fas fa-angle-right"></i> contact</a>
             </div>
 
-            <div class="box">
-                <h3>contact info</h3>
-                <a href="#"> <i class="fas fa-phone"></i> +91-9321812823 , +91-8318727813 </a>
-                <a href="#"> <i class="fas fa-envelope"></i> contact@ananyahouseoffurniture.com </a>
-                <a href="https://maps.app.goo.gl/3wAw79stEiGNyeWa9"> <i class="fas fa-map"></i> Diva-Shil Road,
-                    Khardipada, Thane, Maharashtra, India -[400612] </a>
-            </div>
+            <div class="box" id="footer-contact"></div>
 
-            <div class="box">
-                <h3>follow us</h3>
-                <a href="#"> <i class="fab fa-facebook-f"></i> facebook </a>
-                <a href="#"> <i class="fab fa-twitter"></i> twitter </a>
-                <a href="#"> <i class="fab fa-instagram"></i> instagram </a>
-                <a href="#"> <i class="fab fa-linkedin"></i> linkedin </a>
-            </div>
+            <div class="box" id="footer-social"></div>
 
         </div>
 
-        <div class="credit"> created by <span>Ananya House of Furniture Team</span> | all rights reserved </div>
+        <div class="credit" id="footer-credit"></div>
     </section>
 
 
 
 
     <!-- credit -->
+
+    <!-- Service Detail Modal -->
+    <div class="service-modal" id="service-modal">
+        <div class="service-modal-content" id="service-modal-content"></div>
+    </div>
+
+    <!-- Blog Detail Modal -->
+    <div class="service-modal" id="blog-modal">
+        <div class="service-modal-content" id="blog-modal-content"></div>
+    </div>
+
+    <!-- About Us Detail Modal -->
+    <div class="service-modal" id="about-modal">
+        <div class="service-modal-content about-modal-content" id="about-modal-content"></div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="service-modal" id="payment-modal">
+        <div class="service-modal-content payment-modal-content" id="payment-modal-content"></div>
+    </div>
+
     <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
     <!-- custom js -->
     <script src="js/script.js"></script>

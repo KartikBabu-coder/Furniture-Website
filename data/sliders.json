@@ -1,0 +1,34 @@
+{
+  "sliders": [
+    {
+      "id": 1,
+      "image": "images/home-slide1.jpg",
+      "heading": "we just make a perfect furniture for home",
+      "tagline": "with you since 2012"
+    },
+    {
+      "id": 2,
+      "image": "images/home-slide2.jpg",
+      "heading": "Creating flawless furniture for your home, where beauty meets utility",
+      "tagline": "with you since 2012"
+    },
+    {
+      "id": 3,
+      "image": "images/home-slide3.jpg",
+      "heading": "Our expertise lies in crafting impeccable home furnishings",
+      "tagline": "with you since 2012"
+    },
+    {
+      "id": 4,
+      "image": "images/home-slide4.jpg",
+      "heading": "Designing and building impeccable furniture to enhance your living space",
+      "tagline": "with you since 2012"
+    },
+    {
+      "id": 5,
+      "image": "images/home-slide5.jpg",
+      "heading": "Bringing perfection to home furniture, where every piece is a masterpiece",
+      "tagline": "with you since 2012"
+    }
+  ]
+}

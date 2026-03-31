@@ -1,0 +1,61 @@
+{
+  "about": {
+    "tagline": "welcome to Ananya House of Furniture",
+    "heading": "We Enhance the Beauty of Your Home",
+    "description": "Since the past seven years, we have been passionate about making furniture that transforms spaces. Each piece is painstakingly crafted by our skilled artisans to ensure durability and timeless beauty. We back eco-friendly practices and neighborhood communities. Let Us Redefine Your Home by Choosing From Our Collections Today.",
+    "image": "images/about.jpg",
+    "fullContent": "Welcome to Ananya House of Furniture, where every piece of furniture tells a story of craftsmanship, passion, and dedication to quality.\n\nFounded in 2012, we have grown from a small workshop to a trusted name in custom furniture across Thane and Maharashtra. Our journey began with a simple vision: to create furniture that doesn't just fill a space but transforms it into a home.\n\nWhat sets us apart is our unwavering commitment to quality. Every piece that leaves our workshop undergoes rigorous quality checks. We source our wood from sustainable forests and use eco-friendly finishes that are safe for your family and the environment.\n\nOur team of 25+ skilled artisans brings decades of combined experience in woodworking, upholstery, and interior design. From traditional joinery techniques passed down through generations to modern CNC precision, we blend the best of both worlds.\n\nWe believe in transparent pricing with no hidden costs. Our in-house manufacturing means you get factory-direct prices without compromising on quality. Every purchase comes with our comprehensive 5-year warranty.",
+    "stats": [
+      { "number": "12+", "label": "Years Experience" },
+      { "number": "5000+", "label": "Happy Customers" },
+      { "number": "25+", "label": "Skilled Craftsmen" },
+      { "number": "1000+", "label": "Custom Designs" }
+    ],
+    "whyChooseUs": [
+      {
+        "title": "Premium Quality Materials",
+        "description": "We use only solid hardwoods and premium materials sourced from certified suppliers.",
+        "icon": "fa-gem"
+      },
+      {
+        "title": "Custom Design Solutions",
+        "description": "Bring your vision to life with our expert designers and craftsmen.",
+        "icon": "fa-palette"
+      },
+      {
+        "title": "5-Year Warranty",
+        "description": "Every piece comes with our comprehensive warranty for peace of mind.",
+        "icon": "fa-shield-alt"
+      },
+      {
+        "title": "Free Delivery & Installation",
+        "description": "Pan-India delivery with professional installation at no extra cost.",
+        "icon": "fa-truck"
+      }
+    ]
+  },
+  "footer": {
+    "contactInfo": {
+      "phone": "+91-9321812823 , +91-8318727813",
+      "email": "contact@ananyahouseoffurniture.com",
+      "address": "Diva-Shil Road, Khardipada, Thane, Maharashtra, India -[400612]",
+      "addressLink": "https://maps.app.goo.gl/3wAw79stEiGNyeWa9"
+    },
+    "social": {
+      "facebook": "#",
+      "twitter": "#",
+      "instagram": "#",
+      "linkedin": "#"
+    },
+    "creditText": "created by Ananya House of Furniture Team"
+  },
+  "projectTypes": [
+    "Living Room Furniture",
+    "Bedroom Furniture",
+    "Dining Room Furniture",
+    "Office Furniture",
+    "Outdoor Furniture",
+    "Specialty Furniture",
+    "Other"
+  ]
+}
