@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Ananya House of Furniture</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --main-color: #1f232a;
+            --primary-color: #ce962e;
+            --bg: #f2f2f2;
+            --light-black: #666;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .admin-header {
+            background: var(--main-color);
+            color: white;
+            padding: 1.5rem 3%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-header h1 {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-header h1 i {
+            color: var(--primary-color);
+        }
+
+        .admin-header .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .admin-header .btn-back {
+            background: transparent;
+            border: 0.2rem solid white;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-size: 1.3rem;
+            transition: all 0.3s;
+        }
+
+        .admin-header .btn-back:hover {
+            background: white;
+            color: var(--main-color);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0.2rem 1rem rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 1.2rem;
+            color: var(--light-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+
+        .stat-card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+        }
+
+        .stat-card .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-bar input,
+        .filter-bar select {
+            padding: 1rem 1.5rem;
+            border: 0.1rem solid #ddd;
+            border-radius: 0.5rem;
+            font-size: 1.3rem;
+            font-family: inherit;
+        }
+
+        .filter-bar input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-bar select {
+            min-width: 150px;
+        }
+
+        .filter-bar .btn {
+            background: var(--main-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.3rem;
+            font-family: inherit;
+        }
+
+        .filter-bar .btn:hover {
+            background: var(--primary-color);
+        }
+
+        .filter-bar .btn-refresh {
+            background: var(--primary-color);
+        }
+
+        /* Orders Table */
+        .orders-table-container {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.2rem 1rem rgba(0,0,0,0.1);
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .orders-table th {
+            background: var(--main-color);
+            color: white;
+            padding: 1.5rem 1rem;
+            text-align: left;
+            font-size: 1.3rem;
+            white-space: nowrap;
+        }
+
+        .orders-table td {
+            padding: 1.2rem 1rem;
+            border-bottom: 0.1rem solid #eee;
+            font-size: 1.3rem;
+            vertical-align: top;
+        }
+
+        .orders-table tr:hover {
+            background: #fafafa;
+        }
+
+        .orders-table .order-id {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .orders-table .order-items {
+            max-width: 300px;
+            font-size: 1.2rem;
+            color: var(--light-black);
+        }
+
+        .orders-table .total {
+            font-weight: bold;
+            color: var(--main-color);
+        }
+
+        .status-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-new { background: #fff3cd; color: #856404; }
+        .status-confirmed { background: #d4edda; color: #155724; }
+        .status-delivered { background: #cce5ff; color: #004085; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-right: 0.5rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .action-btn.view {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .action-btn.confirm {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .action-btn.deliver {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .action-btn.cancel {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Order Details Modal */
+        .order-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .order-modal.active {
+            display: flex;
+        }
+
+        .order-modal-content {
+            background: white;
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .order-modal-header {
+            background: var(--main-color);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-modal-header h2 {
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .order-modal-close {
+            font-size: 3rem;
+            cursor: pointer;
+            color: white;
+            line-height: 1;
+        }
+
+        .order-modal-close:hover {
+            color: var(--primary-color);
+        }
+
+        .order-modal-body {
+            padding: 2rem;
+        }
+
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+
+        .detail-section h3 {
+            font-size: 1.4rem;
+            color: var(--main-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 0.2rem solid var(--primary-color);
+        }
+
+        .detail-row {
+            display: flex;
+            padding: 0.5rem 0;
+            font-size: 1.3rem;
+        }
+
+        .detail-row .label {
+            color: var(--light-black);
+            width: 150px;
+            flex-shrink: 0;
+        }
+
+        .detail-row .value {
+            color: var(--main-color);
+            font-weight: 500;
+        }
+
+        .detail-items {
+            background: var(--bg);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 0.1rem solid #ddd;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-item-name {
+            font-size: 1.3rem;
+        }
+
+        .detail-item-qty {
+            color: var(--light-black);
+            font-size: 1.2rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 5rem;
+            color: var(--light-black);
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            color: #ddd;
+        }
+
+        .empty-state h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--main-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1.3rem;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .orders-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+            }
+
+            .filter-bar input,
+            .filter-bar select,
+            .filter-bar .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="admin-header">
+        <h1><i class="fas fa-chair"></i> Ananya Admin Panel</h1>
+        <div class="header-actions">
+            <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Website</a>
+        </div>
+    </div>
+
+    <!-- Container -->
+    <div class="container">
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <h3>Total Orders</h3>
+                        <div class="value" id="stat-total">0</div>
+                    </div>
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <h3>Total Revenue</h3>
+                        <div class="value" id="stat-revenue">Rs.0</div>
+                    </div>
+                    <i class="fas fa-rupee-sign"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <h3>New Orders</h3>
+                        <div class="value" id="stat-new">0</div>
+                    </div>
+                    <i class="fas fa-bell"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <h3>COD Orders</h3>
+                        <div class="value" id="stat-cod">0</div>
+                    </div>
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <input type="text" id="search-input" placeholder="Search by name, phone, order ID...">
+            <select id="status-filter">
+                <option value="">All Status</option>
+                <option value="New Order">New Order</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+            <select id="payment-filter">
+                <option value="">All Payments</option>
+                <option value="UPI">UPI (GPay/PhonePe/Paytm)</option>
+                <option value="COD">Cash on Delivery</option>
+                <option value="CARD">Card Payment</option>
+            </select>
+            <button class="btn btn-refresh" onclick="loadOrders()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <button class="btn" onclick="exportOrders()"><i class="fas fa-download"></i> Export</button>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="orders-table-container">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date & Time</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-tbody">
+                    <!-- Orders loaded here -->
+                </tbody>
+            </table>
+            <div class="empty-state" id="empty-state" style="display:none;">
+                <i class="fas fa-inbox"></i>
+                <h3>No Orders Yet</h3>
+                <p>Orders will appear here when customers make purchases</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="order-modal" id="order-modal">
+        <div class="order-modal-content">
+            <div class="order-modal-header">
+                <h2>Order Details</h2>
+                <span class="order-modal-close" onclick="closeOrderModal()">&times;</span>
+            </div>
+            <div class="order-modal-body" id="order-modal-body">
+                <!-- Order details here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let allOrders = [];
+
+        function loadOrders() {
+            // Load from localStorage
+            try {
+                allOrders = JSON.parse(localStorage.getItem('ananya_orders')) || [];
+            } catch {
+                allOrders = [];
+            }
+
+            // Reverse to show newest first
+            allOrders = allOrders.reverse();
+            updateStats();
+            renderOrders();
+        }
+
+        function updateStats() {
+            const total = allOrders.length;
+            const revenue = allOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+            const newOrders = allOrders.filter(o => (o.status || 'New Order') === 'New Order').length;
+            const codOrders = allOrders.filter(o => (o.paymentMethod || '').toUpperCase() === 'COD').length;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-revenue').textContent = 'Rs.' + revenue.toLocaleString();
+            document.getElementById('stat-new').textContent = newOrders;
+            document.getElementById('stat-cod').textContent = codOrders;
+        }
+
+        function renderOrders() {
+            const tbody = document.getElementById('orders-tbody');
+            const emptyState = document.getElementById('empty-state');
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const paymentFilter = document.getElementById('payment-filter').value;
+
+            let filtered = allOrders.filter(order => {
+                const matchSearch = !search ||
+                    (order.id || '').toLowerCase().includes(search) ||
+                    (order.customer?.name || '').toLowerCase().includes(search) ||
+                    (order.customer?.phone || '').includes(search);
+
+                const matchStatus = !statusFilter || (order.status || 'New Order') === statusFilter;
+                const matchPayment = !paymentFilter || (order.paymentMethod || '').toUpperCase().includes(paymentFilter);
+
+                return matchSearch && matchStatus && matchPayment;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            tbody.innerHTML = filtered.map(order => {
+                const items = (order.items || []).map(i => `${i.name} x${i.quantity}`).join(', ');
+                const status = order.status || 'New Order';
+                const statusClass = status === 'New Order' ? 'status-new' :
+                                   status === 'Confirmed' ? 'status-confirmed' :
+                                   status === 'Delivered' ? 'status-delivered' : 'status-cancelled';
+
+                const paymentDisplay = order.paymentMethod?.toUpperCase() === 'COD' ? 'COD' :
+                                      ['GPAY', 'PHONEPE', 'PAYTM', 'UPI'].includes(order.paymentMethod?.toUpperCase()) ? 'UPI' :
+                                      order.paymentMethod?.toUpperCase() === 'CARD' ? 'Card' : order.paymentMethod || '-';
+
+                return `
+                    <tr>
+                        <td class="order-id">${order.id || '-'}</td>
+                        <td>${formatDate(order.date)}</td>
+                        <td>${order.customer?.name || '-'}</td>
+                        <td>${order.customer?.phone || '-'}</td>
+                        <td class="order-items" title="${items}">${items.substring(0, 50)}${items.length > 50 ? '...' : ''}</td>
+                        <td class="total">Rs.${(order.total || 0).toLocaleString()}</td>
+                        <td>${paymentDisplay}</td>
+                        <td><span class="status-badge ${statusClass}">${status}</span></td>
+                        <td>
+                            <button class="action-btn view" onclick="viewOrder('${order.id}')"><i class="fas fa-eye"></i></button>
+                            ${status === 'New Order' ? `<button class="action-btn confirm" onclick="updateStatus('${order.id}', 'Confirmed')"><i class="fas fa-check"></i></button>` : ''}
+                            ${status === 'Confirmed' ? `<button class="action-btn deliver" onclick="updateStatus('${order.id}', 'Delivered')"><i class="fas fa-truck"></i></button>` : ''}
+                            ${status !== 'Delivered' && status !== 'Cancelled' ? `<button class="action-btn cancel" onclick="updateStatus('${order.id}', 'Cancelled')"><i class="fas fa-times"></i></button>` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function formatDate(isoString) {
+            if (!isoString) return '-';
+            const date = new Date(isoString);
+            return date.toLocaleString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        function viewOrder(orderId) {
+            const order = allOrders.find(o => o.id === orderId);
+            if (!order) return;
+
+            const itemsHTML = (order.items || []).map(item => `
+                <div class="detail-item">
+                    <div>
+                        <div class="detail-item-name">${item.name}</div>
+                        <div class="detail-item-qty">Qty: ${item.quantity} x Rs.${item.price.toLocaleString()}</div>
+                    </div>
+                    <strong>Rs.${(item.price * item.quantity).toLocaleString()}</strong>
+                </div>
+            `).join('');
+
+            document.getElementById('order-modal-body').innerHTML = `
+                <div class="detail-section">
+                    <h3><i class="fas fa-receipt"></i> Order Info</h3>
+                    <div class="detail-row">
+                        <span class="label">Order ID:</span>
+                        <span class="value">${order.id || '-'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Date:</span>
+                        <span class="value">${formatDate(order.date)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Payment:</span>
+                        <span class="value">${order.paymentMethod?.toUpperCase() || '-'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Status:</span>
+                        <span class="value">${order.status || 'New Order'}</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3><i class="fas fa-user"></i> Customer Info</h3>
+                    <div class="detail-row">
+                        <span class="label">Name:</span>
+                        <span class="value">${order.customer?.name || '-'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Phone:</span>
+                        <span class="value">${order.customer?.phone || '-'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Email:</span>
+                        <span class="value">${order.customer?.email || 'N/A'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Address:</span>
+                        <span class="value">${order.customer?.address || '-'}</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3><i class="fas fa-box"></i> Items</h3>
+                    <div class="detail-items">${itemsHTML}</div>
+                </div>
+
+                <div class="detail-section">
+                    <h3><i class="fas fa-money-bill"></i> Total</h3>
+                    <div class="detail-row">
+                        <span class="label">Total Amount:</span>
+                        <span class="value" style="font-size:2rem;color:var(--primary-color);font-weight:bold;">
+                            Rs.${(order.total || 0).toLocaleString()}
+                        </span>
+                    </div>
+                </div>
+
+                ${order.customer?.notes ? `
+                <div class="detail-section">
+                    <h3><i class="fas fa-sticky-note"></i> Notes</h3>
+                    <div class="detail-row">
+                        <span class="value">${order.customer.notes}</span>
+                    </div>
+                </div>
+                ` : ''}
+            `;
+
+            document.getElementById('order-modal').classList.add('active');
+        }
+
+        function updateStatus(orderId, newStatus) {
+            const orders = JSON.parse(localStorage.getItem('ananya_orders') || '[]');
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                localStorage.setItem('ananya_orders', JSON.stringify(orders));
+                showToast(`Order ${orderId} marked as ${newStatus}`);
+                loadOrders();
+            }
+        }
+
+        function closeOrderModal() {
+            document.getElementById('order-modal').classList.remove('active');
+        }
+
+        function exportOrders() {
+            const csv = [
+                ['Order ID', 'Date', 'Customer', 'Phone', 'Email', 'Address', 'Items', 'Total', 'Payment', 'Status'],
+                ...allOrders.map(o => [
+                    o.id || '',
+                    formatDate(o.date),
+                    o.customer?.name || '',
+                    o.customer?.phone || '',
+                    o.customer?.email || '',
+                    o.customer?.address || '',
+                    (o.items || []).map(i => `${i.name} x${i.quantity}`).join('; '),
+                    o.total || 0,
+                    o.paymentMethod || '',
+                    o.status || 'New Order'
+                ])
+            ].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `orders-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            showToast('Orders exported!');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Event listeners
+        document.getElementById('search-input').addEventListener('input', renderOrders);
+        document.getElementById('status-filter').addEventListener('change', renderOrders);
+        document.getElementById('payment-filter').addEventListener('change', renderOrders);
+
+        // Close modal on outside click
+        document.getElementById('order-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'order-modal') closeOrderModal();
+        });
+
+        // Close modal on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeOrderModal();
+        });
+
+        // Load orders on page load
+        loadOrders();
+    </script>
+</body>
+</html>

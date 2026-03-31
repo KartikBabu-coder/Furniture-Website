@@ -1,0 +1,95 @@
+==============================================
+ORDER NOTIFICATION SETUP GUIDE
+Ananya House of Furniture
+==============================================
+
+STEP 1: Create Google Sheet
+----------------------------
+1. Go to https://sheets.google.com
+2. Create a new Google Sheet
+3. Name it "Ananya Orders"
+4. Copy the Sheet ID from the URL:
+   URL looks like: https://docs.google.com/spreadsheets/d/[COPY_THIS_PART]/edit
+   Example: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms
+   Copy the part after "/d/" and before "/edit"
+
+
+STEP 2: Create Google Apps Script
+---------------------------------
+1. Go to https://script.google.com
+2. Click "New Project"
+3. Delete any existing code
+4. Open file: data/apps-script.js
+5. Copy ALL the code from that file
+6. Paste it into the Google Apps Script editor
+
+STEP 3: Configure the Script
+----------------------------
+In the script editor, find these lines at the top:
+
+const YOUR_EMAIL = 'contact@ananyahouseoffurniture.com';
+const SHEET_ID = 'YOUR_GOOGLE_SHEET_ID';
+
+Replace with your actual values:
+- YOUR_EMAIL: Your email to receive order notifications
+- SHEET_ID: The sheet ID you copied in Step 1
+
+
+STEP 4: Deploy the Script
+-------------------------
+1. Click "Deploy" button (top right)
+2. Select "New deployment"
+3. Click the gear icon ⚙️
+4. Select "Web app"
+5. Set:
+   - Description: "Order Notifications"
+   - Execute as: "Me"
+   - Who has access: "Anyone"
+6. Click "Deploy"
+7. Click "Authorize access" and grant permissions
+8. Copy the Web App URL
+
+
+STEP 5: Add URL to Website
+---------------------------
+1. Open: js/script.js
+2. Find this line (around line 875):
+   const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+3. Replace with your actual Web App URL:
+   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfy.../exec';
+
+
+STEP 6: Test It
+----------------
+1. Go to your website
+2. Add something to cart
+3. Go to checkout
+4. Complete payment
+5. Check your email - you should receive order details!
+
+
+WHAT HAPPENS WHEN ORDER IS PLACED:
+-----------------------------------
+1. Customer completes payment
+2. Order saved to Google Sheet (all order details)
+3. Email sent to YOUR_EMAIL with:
+   - Order ID
+   - Customer name, phone, address
+   - Items ordered
+   - Total amount
+   - Payment method
+   - Call customer button
+
+
+==============================================
+TROUBLESHOOTING
+==============================================
+
+Q: Not receiving emails?
+A: Check spam folder. Add contact@ananyahouseoffurniture.com to contacts.
+
+Q: Orders not saving to sheet?
+A: Make sure SHEET_ID is correct and sheet is shared properly.
+
+Q: Want to change email?
+A: Update YOUR_EMAIL in the Apps Script and redeploy.

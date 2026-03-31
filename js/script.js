@@ -317,7 +317,7 @@ async function renderProducts() {
             <img src="${product.image}" alt="${product.name}">
             <h3>${product.name}</h3>
             ${renderStars(product.rating)}
-            <div class="price">${product.price.toLocaleString()} <span>${product.originalPrice.toLocaleString()}</span></div>
+            <div class="price">Rs.${product.price.toLocaleString()} <span>Rs.${product.originalPrice.toLocaleString()}</span></div>
             <div class="product-actions">
                 <button class="btn add-cart-btn" onclick="addToCart(${product.id})">
                     <i class="fas fa-shopping-cart"></i> add to cart
@@ -431,9 +431,542 @@ function updateCartTotal() {
 }
 
 function handleCheckout() {
-    showToast('Redirecting to checkout... (integrate payment gateway)');
-    // Here you would integrate with a payment gateway like Razorpay, Stripe, etc.
+    const cart = getCart();
+    if (cart.length === 0) {
+        showToast('Your cart is empty!');
+        return;
+    }
+    openPaymentModal();
 }
+
+// ============================================================
+// PAYMENT MODAL
+// ============================================================
+
+function getCartTotal() {
+    const cart = getCart();
+    return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+}
+
+function openPaymentModal() {
+    const modal = document.getElementById('payment-modal');
+    const content = document.getElementById('payment-modal-content');
+    const total = getCartTotal();
+
+    content.innerHTML = `
+        <div class="payment-header">
+            <h2><i class="fas fa-lock"></i> Secure Checkout</h2>
+            <span class="modal-close" onclick="closePaymentModal()">&times;</span>
+        </div>
+        <div class="payment-body">
+            <!-- Step 1: Delivery Info -->
+            <div class="payment-step active" id="payment-step-1">
+                <h3>Step 1: Delivery Information</h3>
+                <div class="payment-form">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="pay-name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="pay-phone" placeholder="Enter phone number" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="pay-email" placeholder="Enter email address">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Delivery Address *</label>
+                        <textarea id="pay-address" placeholder="Enter complete delivery address" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Order Notes (Optional)</label>
+                        <textarea id="pay-notes" placeholder="Any special instructions..." rows="2"></textarea>
+                    </div>
+                </div>
+                <button class="btn payment-next-btn" onclick="goToPaymentStep2()">
+                    Continue to Payment <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Step 2: Payment Method -->
+            <div class="payment-step" id="payment-step-2">
+                <h3>Step 2: Select Payment Method</h3>
+                <div class="payment-summary">
+                    <span>Total Amount:</span>
+                    <strong id="payment-total-display">Rs.${total.toLocaleString()}</strong>
+                </div>
+
+                <div class="payment-methods">
+                    <label class="payment-method" onclick="selectPaymentMethod('gpay')">
+                        <input type="radio" name="payment-method" value="gpay">
+                        <div class="method-content">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/UPI-Logo-vector.svg/120px-UPI-Logo-vector.svg.png" alt="GPay" class="payment-icon-img">
+                            <div class="method-info">
+                                <span class="method-name">Google Pay (UPI)</span>
+                                <span class="method-desc">Pay instantly with GPay</span>
+                            </div>
+                            <div class="method-check"><i class="fas fa-check"></i></div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method" onclick="selectPaymentMethod('phonepe')">
+                        <input type="radio" name="payment-method" value="phonepe">
+                        <div class="method-content">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/PhonePe_Logo.svg/120px-PhonePe_Logo.svg.png" alt="PhonePe" class="payment-icon-img">
+                            <div class="method-info">
+                                <span class="method-name">PhonePe (UPI)</span>
+                                <span class="method-desc">Fast & secure with PhonePe</span>
+                            </div>
+                            <div class="method-check"><i class="fas fa-check"></i></div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method" onclick="selectPaymentMethod('paytm')">
+                        <input type="radio" name="payment-method" value="paytm">
+                        <div class="method-content">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/120px-Paytm_Logo_%28standalone%29.svg.png" alt="Paytm" class="payment-icon-img">
+                            <div class="method-info">
+                                <span class="method-name">Paytm (UPI/Wallet)</span>
+                                <span class="method-desc">Pay with Paytm wallet or UPI</span>
+                            </div>
+                            <div class="method-check"><i class="fas fa-check"></i></div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method" onclick="selectPaymentMethod('upi')">
+                        <input type="radio" name="payment-method" value="upi">
+                        <div class="method-content">
+                            <div class="payment-icon"><i class="fas fa-mobile-alt"></i></div>
+                            <div class="method-info">
+                                <span class="method-name">Other UPI Apps</span>
+                                <span class="method-desc">Any UPI app (BHIM, etc.)</span>
+                            </div>
+                            <div class="method-check"><i class="fas fa-check"></i></div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method" onclick="selectPaymentMethod('card')">
+                        <input type="radio" name="payment-method" value="card">
+                        <div class="method-content">
+                            <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
+                            <div class="method-info">
+                                <span class="method-name">Credit / Debit Card</span>
+                                <span class="method-desc">Visa, Mastercard, RuPay</span>
+                            </div>
+                            <div class="method-check"><i class="fas fa-check"></i></div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method" onclick="selectPaymentMethod('cod')">
+                        <input type="radio" name="payment-method" value="cod">
+                        <div class="method-content">
+                            <div class="payment-icon"><i class="fas fa-money-bill-wave"></i></div>
+                            <div class="method-info">
+                                <span class="method-name">Cash on Delivery</span>
+                                <span class="method-desc">Pay when you receive</span>
+                            </div>
+                            <div class="method-check"><i class="fas fa-check"></i></div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Card Details (hidden by default) -->
+                <div class="card-details" id="card-details" style="display:none;">
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Expiry Date</label>
+                            <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="form-group">
+                            <label>CVV</label>
+                            <input type="password" id="card-cvv" placeholder="***" maxlength="3">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Cardholder Name</label>
+                        <input type="text" id="card-name" placeholder="Name on card">
+                    </div>
+                </div>
+
+                <div class="payment-actions">
+                    <button class="btn btn-back" onclick="goToPaymentStep1()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="btn payment-next-btn" onclick="processPayment()">
+                        <i class="fas fa-lock"></i> Pay Rs.${total.toLocaleString()}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Payment Processing -->
+            <div class="payment-step" id="payment-step-3">
+                <div class="payment-processing">
+                    <div class="spinner"></div>
+                    <h3>Processing Payment...</h3>
+                    <p id="payment-status-text">Please wait while we process your payment</p>
+                </div>
+            </div>
+
+            <!-- Step 4: Success -->
+            <div class="payment-step" id="payment-step-4">
+                <div class="payment-success">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Order Placed Successfully!</h3>
+                    <p class="order-id">Order ID: <strong id="order-id-display">ANF-${Date.now().toString().slice(-8)}</strong></p>
+                    <p class="success-message">
+                        Thank you for your order! We have received your request and will contact you shortly to confirm delivery details.
+                    </p>
+                    <div class="success-details">
+                        <p><i class="fas fa-phone"></i> We will call you within 24 hours</p>
+                        <p><i class="fas fa-truck"></i> Estimated delivery: 5-7 working days</p>
+                    </div>
+                    <button class="btn" onclick="closePaymentModal(); location.reload();">
+                        Continue Shopping
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+let selectedPaymentMethod = '';
+let customerInfo = {};
+
+function goToPaymentStep1() {
+    document.getElementById('payment-step-1').classList.add('active');
+    document.getElementById('payment-step-2').classList.remove('active');
+}
+
+function goToPaymentStep2() {
+    const name = document.getElementById('pay-name').value.trim();
+    const phone = document.getElementById('pay-phone').value.trim();
+    const address = document.getElementById('pay-address').value.trim();
+
+    if (!name || !phone || !address) {
+        showToast('Please fill in all required fields');
+        return;
+    }
+
+    if (!/^[0-9]{10}$/.test(phone)) {
+        showToast('Please enter a valid 10-digit phone number');
+        return;
+    }
+
+    customerInfo = {
+        name: name,
+        phone: phone,
+        email: document.getElementById('pay-email').value.trim(),
+        address: address,
+        notes: document.getElementById('pay-notes').value.trim()
+    };
+
+    document.getElementById('payment-step-1').classList.remove('active');
+    document.getElementById('payment-step-2').classList.add('active');
+}
+
+function selectPaymentMethod(method) {
+    selectedPaymentMethod = method;
+
+    // Update radio buttons
+    const radios = document.querySelectorAll('input[name="payment-method"]');
+    radios.forEach(r => r.checked = r.value === method);
+
+    // Show/hide card details
+    const cardDetails = document.getElementById('card-details');
+    if (method === 'card') {
+        cardDetails.style.display = 'block';
+    } else {
+        cardDetails.style.display = 'none';
+    }
+
+    // Update visual selection
+    document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
+    const selected = document.querySelector(`input[value="${method}"]`).closest('.payment-method');
+    if (selected) selected.classList.add('selected');
+}
+
+function processPayment() {
+    if (!selectedPaymentMethod) {
+        showToast('Please select a payment method');
+        return;
+    }
+
+    if (selectedPaymentMethod === 'card') {
+        const cardNumber = document.getElementById('card-number').value.trim();
+        const expiry = document.getElementById('card-expiry').value.trim();
+        const cvv = document.getElementById('card-cvv').value.trim();
+        const cardName = document.getElementById('card-name').value.trim();
+
+        if (!cardNumber || !expiry || !cvv || !cardName) {
+            showToast('Please fill in all card details');
+            return;
+        }
+    }
+
+    // Show processing step
+    document.getElementById('payment-step-2').classList.remove('active');
+    document.getElementById('payment-step-3').classList.add('active');
+
+    const total = getCartTotal();
+    const cart = getCart();
+
+    // Simulate UPI payment process
+    if (['gpay', 'phonepe', 'paytm', 'upi'].includes(selectedPaymentMethod)) {
+        const upiIds = {
+            gpay: 'rameshkumar1567@axl',
+            phonepe: 'rameshkumar1567@axl',
+            paytm: 'rameshkumar1567@axl',
+            upi: 'rameshkumar1567@axl'
+        };
+
+        const appNames = {
+            gpay: 'Google Pay',
+            phonepe: 'PhonePe',
+            paytm: 'Paytm',
+            upi: 'UPI'
+        };
+
+        document.getElementById('payment-status-text').textContent =
+            `Opening ${appNames[selectedPaymentMethod]}... Please complete payment on your phone`;
+
+        // Create UPI payment link
+        const upiId = upiIds[selectedPaymentMethod];
+        const amount = total;
+        const orderId = `ANF${Date.now().toString().slice(-8)}`;
+        const name = encodeURIComponent(customerInfo.name);
+
+        // UPI deep link
+        const upiLink = `upi://pay?pa=${upiId}&pn=Ananya%20Furniture&am=${amount}&cu=INR&tn=Order-${orderId}&mam=${amount}`;
+
+        // Try to open UPI app
+        setTimeout(() => {
+            const now = Date.now();
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = upiLink;
+            document.body.appendChild(iframe);
+
+            // If iframe doesn't work, try location change
+            setTimeout(() => {
+                location.href = upiLink;
+            }, 500);
+
+            // Show QR fallback after 2 seconds
+            setTimeout(() => {
+                showUPIPayment(amount, upiId, orderId);
+            }, 2000);
+        }, 1500);
+
+    } else if (selectedPaymentMethod === 'card') {
+        // Simulate card processing
+        setTimeout(() => {
+            completePaymentFlow(cart, total);
+        }, 3000);
+
+    } else if (selectedPaymentMethod === 'cod') {
+        // Cash on delivery
+        document.getElementById('payment-status-text').textContent = 'Confirming your order...';
+        setTimeout(() => {
+            completePaymentFlow(cart, total);
+        }, 2000);
+    }
+}
+
+function showUPIPayment(amount, upiId, orderId) {
+    document.getElementById('payment-status-text').textContent = 'Or scan QR code below to pay:';
+
+    const step3 = document.getElementById('payment-step-3');
+    const processing = step3.querySelector('.payment-processing');
+
+    processing.innerHTML = `
+        <div class="upi-qr-section">
+            <h3>Scan to Pay</h3>
+            <div class="qr-container">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${upiId}&pn=Ananya%20Furniture&am=${amount}&cu=INR&tn=Order-${orderId}" alt="Scan QR to Pay" class="qr-code">
+            </div>
+            <div class="upi-details">
+                <p><strong>Pay Amount:</strong> <span style="color:var(--primary-color);font-size:2rem;">Rs.${amount.toLocaleString()}</span></p>
+                <p><strong>UPI ID:</strong> <code>${upiId}</code></p>
+                <p><strong>Order ID:</strong> <code>${orderId}</code></p>
+            </div>
+            <div class="upi-actions">
+                <p style="font-size:1.3rem;color:var(--light-black);margin-bottom:1rem;">Payment will be verified automatically after you complete it</p>
+                <button class="btn" onclick="confirmUPIPayment('${orderId}')">
+                    <i class="fas fa-check"></i> I've Completed Payment
+                </button>
+                <button class="btn btn-back" onclick="goToPaymentStep2()">
+                    <i class="fas fa-arrow-left"></i> Change Payment Method
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function confirmUPIPayment(orderId) {
+    const cart = getCart();
+    const total = getCartTotal();
+    completePaymentFlow(cart, total);
+}
+
+function completePaymentFlow(cart, total) {
+    const orderId = `ANF${Date.now().toString().slice(-8)}`;
+
+    const order = {
+        id: orderId,
+        items: cart,
+        total: total,
+        customer: customerInfo,
+        paymentMethod: selectedPaymentMethod,
+        date: new Date().toISOString(),
+        status: 'confirmed'
+    };
+
+    // Save to localStorage
+    try {
+        const orders = JSON.parse(localStorage.getItem('ananya_orders') || '[]');
+        orders.unshift(order);
+        localStorage.setItem('ananya_orders', JSON.stringify(orders.slice(0, 20)));
+    } catch(e) {}
+
+    // Send order to Google Sheets
+    sendOrderToSheet(order);
+
+    // Send SMS to customer
+    sendCustomerSMS(order);
+
+    // Clear cart
+    localStorage.removeItem('ananya_cart');
+    updateCartCount();
+
+    // Show success
+    document.getElementById('payment-step-3').classList.remove('active');
+    document.getElementById('payment-step-4').classList.add('active');
+    document.getElementById('order-id-display').textContent = orderId;
+}
+
+// Send SMS to customer
+function sendCustomerSMS(order) {
+    // Fast2SMS API - Replace with your API key
+    const SMS_API_KEY = 'BMSFLbr8J7fu2kYRPZDyihOp1XUH3nG65jag9TvVCmAdIKcslQTJ1OdQzr7w2yboRkZEXFlKjpMaAiB6';
+
+    if (!SMS_API_KEY || SMS_API_KEY === 'YOUR_FAST2SMS_API_KEY') {
+        console.log('SMS not configured. Order:', order.id);
+        return;
+    }
+
+    const phone = order.customer.phone;
+    const name = order.customer.name.split(' ')[0]; // First name
+    const amount = order.total.toLocaleString();
+    const orderId = order.id;
+
+    // Format phone number (ensure 10 digits)
+    const formattedPhone = phone.replace(/[^0-9]/g, '').slice(-10);
+
+    const message = `Dear ${name}, Thank you for your order! Order ID: ${orderId}. Total: Rs.${amount}. We will call you within 24 hours to confirm delivery. - Ananya House of Furniture`;
+
+    // Send via Fast2SMS
+    fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${SMS_API_KEY}&message=${encodeURIComponent(message)}&language=english&route=q&numbers=${formattedPhone}`, {
+        method: 'GET',
+        headers: { 'Cache-Control': 'no-cache' }
+    }).then(response => response.json())
+      .then(data => {
+          if (data.return) {
+              console.log('SMS sent to customer:', phone);
+          } else {
+              console.log('SMS failed:', data);
+          }
+      })
+      .catch(err => console.log('SMS error:', err));
+}
+
+// Alternative: Send SMS via Google Apps Script (FREE)
+// This function sends SMS using your Google Apps Script with SMS gateway
+function sendSMSViaGoogleScript(phone, name, orderId, amount) {
+    // See data/SMS-SETUP.txt for Google Apps Script SMS setup
+    // This is a free alternative using SMS gateways like Way2SMS
+}
+
+// Send order to Google Sheets
+function sendOrderToSheet(order) {
+    const itemsList = order.items.map(i => `${i.name} x${i.quantity} (Rs.${i.price})`).join(', ');
+
+    const data = {
+        orderId: order.id,
+        date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+        customerName: order.customer.name,
+        phone: order.customer.phone,
+        email: order.customer.email || 'N/A',
+        address: order.customer.address,
+        items: itemsList,
+        total: 'Rs.' + order.total.toLocaleString(),
+        paymentMethod: order.paymentMethod.toUpperCase(),
+        status: 'New Order'
+    };
+
+    // Send to Google Apps Script - REPLACE with your deployed Apps Script URL
+    // See data/apps-script.js for setup instructions
+    const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    }).catch(() => {});
+}
+
+function closePaymentModal() {
+    const modal = document.getElementById('payment-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        // Re-render cart (will show empty cart)
+        setTimeout(() => renderCart(), 300);
+    }
+}
+
+// Close payment modal on outside click
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('payment-modal');
+    if (modal && modal.classList.contains('active') && e.target === modal) {
+        // Don't close on outside click during payment processing
+        if (!document.getElementById('payment-step-3').classList.contains('active')) {
+            closePaymentModal();
+        }
+    }
+});
+
+// Close payment modal on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        if (!document.getElementById('payment-step-3')?.classList.contains('active')) {
+            closePaymentModal();
+        }
+    }
+});
+
+// Phone number input filter - only numbers, max 10 digits
+// Using event delegation since modal is created dynamically
+document.addEventListener('input', (e) => {
+    if (e.target.id === 'pay-phone') {
+        // Remove non-numeric characters
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        // Limit to 10 digits
+        if (e.target.value.length > 10) {
+            e.target.value = e.target.value.slice(0, 10);
+        }
+    }
+});
 
 // Service Detail Modal
 let allServicesData = [];
