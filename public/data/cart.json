@@ -1,0 +1,28 @@
+{
+  "cartItems": [
+    {
+      "id": 1,
+      "name": "cart item 01",
+      "image": "images/cart-img-1.jpg",
+      "price": 18.99
+    },
+    {
+      "id": 2,
+      "name": "cart item 02",
+      "image": "images/cart-img-2.jpg",
+      "price": 18.99
+    },
+    {
+      "id": 3,
+      "name": "cart item 03",
+      "image": "images/cart-img-3.jpg",
+      "price": 18.99
+    },
+    {
+      "id": 4,
+      "name": "cart item 04",
+      "image": "images/cart-img-4.jpg",
+      "price": 18.99
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "team": [
+    {
+      "id": 1,
+      "name": "Ramesh",
+      "role": "Software Engineer",
+      "image": "images/team-2.jpg",
+      "social": {
+        "facebook": "https://www.facebook.com/profile.php?id=100009901991682&mibextid=ZbWKwL",
+        "twitter": "https://x.com/RAMESHK41243561?t=FbeG012Bhdo--6srXgVeuQ&s=09",
+        "instagram": "https://www.instagram.com/prajapati_ramesh_18b?igsh=YzljYTk1ODg3Zg==",
+        "linkedin": "https://www.linkedin.com/in/ramesh-kumar-7ba5311a5"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Pirtesh Koli",
+      "role": "Architect/Interior Designer",
+      "image": "images/team-5.png",
+      "social": {
+        "facebook": "#",
+        "twitter": "#",
+        "instagram": "#",
+        "linkedin": "#"
+      }
+    },
+    {
+      "id": 3,
+      "name": "Latien",
+      "role": "Designer",
+      "image": "images/team-6.png",
+      "social": {
+        "facebook": "#",
+        "twitter": "#",
+        "instagram": "#",
+        "linkedin": "#"
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "navigation": [
+    { "id": 1, "label": "home", "href": "#home" },
+    { "id": 2, "label": "about", "href": "#about" },
+    { "id": 3, "label": "services", "href": "#services" },
+    { "id": 4, "label": "product", "href": "#product" },
+    { "id": 5, "label": "team", "href": "#team" },
+    { "id": 6, "label": "contact", "href": "#contact" }
+  ]
+}
