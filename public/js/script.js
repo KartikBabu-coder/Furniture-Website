@@ -85,9 +85,76 @@ async function renderNavigation() {
     if (!data) return;
     const nav = document.getElementById('navbar');
     if (!nav) return;
-    nav.innerHTML = data.navigation.map(item =>
-        `<a href="${item.href}">${item.label}</a>`
-    ).join('');
+    nav.innerHTML = data.navigation.map(item => {
+        if (item.href === '#product') {
+            return `<a href="#" onclick="openAllProducts(); return false;">${item.label}</a>`;
+        }
+        return `<a href="${item.href}">${item.label}</a>`;
+    }).join('');
+}
+
+// Open all products popup from header nav
+function openAllProducts() {
+    if (!allProducts.length) return;
+
+    // Close mobile menu
+    document.querySelector('.header .navbar')?.classList.remove('active');
+    document.querySelector('#menu-btn')?.classList.remove('fa-times');
+
+    // Create product modal if not exists
+    let productModal = document.getElementById('product-modal');
+    if (!productModal) {
+        productModal = document.createElement('div');
+        productModal.id = 'product-modal';
+        productModal.className = 'service-modal';
+        productModal.innerHTML = '<div class="service-modal-content" id="product-modal-content"></div>';
+        document.body.appendChild(productModal);
+
+        // Close on outside click
+        productModal.addEventListener('click', (e) => {
+            if (e.target === productModal) closeProductModal();
+        });
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeProductModal();
+        });
+    }
+
+    const modalContent = document.getElementById('product-modal-content');
+    modalContent.innerHTML = `
+        <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;">
+            <h2>All Products <span style="color:var(--primary-color);">(${allProducts.length})</span></h2>
+            <span class="modal-close" onclick="closeProductModal()">&times;</span>
+        </div>
+        <div class="modal-body" style="max-height:calc(96vh - 70px);overflow-y:auto;padding:20px;">
+            <div class="product-grid">
+                ${allProducts.map(product => `
+                    <div class="box">
+                        <a href="#" class="fas fa-heart wishlist-btn" onclick="toggleWishlist(this); return false;"></a>
+                        <a href="#" class="fas fa-eye"></a>
+                        <img src="${product.image}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        ${renderStars(product.rating)}
+                        <div class="price">Rs.${product.price.toLocaleString()} <span>Rs.${product.originalPrice.toLocaleString()}</span></div>
+                        <div class="product-actions">
+                            <button class="btn add-cart-btn" onclick="addToCart(${product.id}); closeProductModal();">
+                                <i class="fas fa-shopping-cart"></i> add to cart
+                            </button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    productModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeProductModal() {
+    const modal = document.getElementById('product-modal');
+    if (modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
 }
 
 // Render Home Sliders
@@ -176,8 +243,8 @@ function openAboutModal() {
             ` : ''}
         </div>
         <div class="modal-footer">
-            <a href="#contact" class="btn" onclick="closeAboutModal()">Contact Us</a>
-            <a href="#product" class="btn btn-outline" onclick="closeAboutModal()">View Products</a>
+            <button class="btn" onclick="closeAboutModal(); openContactForm();">Contact Us</button>
+            <button class="btn btn-outline" onclick="closeAboutModal(); openAllProducts();">View Products</button>
         </div>
     `;
 
@@ -303,28 +370,13 @@ function showToast(message) {
     }, 2500);
 }
 
-// Render Products with Add to Cart
+// Render Products - only shown when user clicks on "product" in header nav
 async function renderProducts() {
     const data = await loadJSON('data/products.json');
     if (!data) return;
     allProducts = data.products;
-    const container = document.getElementById('products-container');
-    if (!container) return;
-    container.innerHTML = data.products.map(product => `
-        <div class="box">
-            <a href="#" class="fas fa-heart wishlist-btn" onclick="toggleWishlist(this); return false;"></a>
-            <a href="#" class="fas fa-eye"></a>
-            <img src="${product.image}" alt="${product.name}">
-            <h3>${product.name}</h3>
-            ${renderStars(product.rating)}
-            <div class="price">Rs.${product.price.toLocaleString()} <span>Rs.${product.originalPrice.toLocaleString()}</span></div>
-            <div class="product-actions">
-                <button class="btn add-cart-btn" onclick="addToCart(${product.id})">
-                    <i class="fas fa-shopping-cart"></i> add to cart
-                </button>
-            </div>
-        </div>
-    `).join('');
+    // Don't render products on main page - they only show when user clicks "product" in nav
+    // The container will be populated by openAllProducts() function
 }
 
 // Wishlist toggle
@@ -978,11 +1030,11 @@ async function renderServices() {
     const container = document.getElementById('services-container');
     if (!container) return;
     container.innerHTML = data.services.map(service => `
-        <div class="box">
+        <div class="box" onclick="openServiceModal(${service.id}); return false;" style="cursor:pointer;">
             <img src="${service.image}" alt="${service.name}">
             <h3>${service.name}</h3>
             <p>${service.description}</p>
-            <a href="#" class="btn" onclick="openServiceModal(${service.id}); return false;">${service.linkText}</a>
+            <span class="btn">${service.linkText}</span>
         </div>
     `).join('');
 }
@@ -1009,8 +1061,8 @@ function openServiceModal(id) {
             ${featuresHTML ? `<div class="modal-features"><h3>What We Offer:</h3><ul>${featuresHTML}</ul></div>` : ''}
         </div>
         <div class="modal-footer">
-            <a href="#contact" class="btn" onclick="closeServiceModal()">Get Quote</a>
-            <a href="#" class="btn btn-outline" onclick="closeServiceModal(); return false;">Close</a>
+            <button class="btn" onclick="closeServiceModal(); openContactForm();">Get Quote</button>
+            <button class="btn btn-outline" onclick="closeServiceModal();">Close</button>
         </div>
     `;
 
@@ -1076,7 +1128,7 @@ async function renderBlog() {
     const container = document.getElementById('blog-container');
     if (!container) return;
     container.innerHTML = data.posts.map(post => `
-        <div class="box">
+        <div class="box" onclick="openBlogModal(${post.id}); return false;" style="cursor:pointer;">
             <div class="image">
                 <img src="${post.image}" alt="${post.title}">
                 <span class="blog-category">${post.category || ''}</span>
@@ -1084,7 +1136,7 @@ async function renderBlog() {
             <div class="content">
                 <h3>${post.title}</h3>
                 <p>${post.excerpt}</p>
-                <a href="#" class="btn" onclick="openBlogModal(${post.id}); return false;">read more</a>
+                <span class="btn">read more</span>
                 <div class="icons">
                     <a href="#"><i class="fas fa-calendar"></i>${post.date}</a>
                     <a href="#"><i class="fas fa-user"></i>${post.author}</a>
@@ -1129,13 +1181,131 @@ function openBlogModal(id) {
             ${tagsHTML ? `<div class="blog-modal-tags">${tagsHTML}</div>` : ''}
         </div>
         <div class="modal-footer blog-modal-footer">
-            <a href="#contact" class="btn" onclick="closeBlogModal()">Get in Touch</a>
-            <a href="#" class="btn btn-outline" onclick="closeBlogModal(); return false;">Close</a>
+            <button class="btn" onclick="closeBlogModal(); openContactForm();">Get in Touch</button>
+            <button class="btn btn-outline" onclick="closeBlogModal();">Close</button>
         </div>
     `;
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+}
+
+// Open Contact Form as full popup
+function openContactForm() {
+    // Close mobile menu
+    document.querySelector('.header .navbar')?.classList.remove('active');
+    document.querySelector('#menu-btn')?.classList.remove('fa-times');
+
+    let contactModal = document.getElementById('contact-modal');
+    if (!contactModal) {
+        contactModal = document.createElement('div');
+        contactModal.id = 'contact-modal';
+        contactModal.className = 'service-modal';
+        contactModal.innerHTML = '<div class="service-modal-content" id="contact-modal-content"></div>';
+        document.body.appendChild(contactModal);
+
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) closeContactForm();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeContactForm();
+        });
+    }
+
+    const modalContent = document.getElementById('contact-modal-content');
+    modalContent.innerHTML = `
+        <div class="modal-header">
+            <h2>Get in Touch</h2>
+            <span class="modal-close" onclick="closeContactForm()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="contact-form-popup" onsubmit="submitContactFormPopup(event)">
+                <h3 style="margin-bottom:15px;color:var(--black);">Contact Us</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                    <div style="margin-bottom:15px;">
+                        <label style="display:block;margin-bottom:5px;font-weight:600;color:var(--black);">Your Name *</label>
+                        <input type="text" name="name" required style="width:100%;padding:10px 15px;border:1px solid #ddd;border-radius:8px;font-size:1.4rem;">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label style="display:block;margin-bottom:5px;font-weight:600;color:var(--black);">Phone Number *</label>
+                        <input type="tel" name="number" maxlength="10" required style="width:100%;padding:10px 15px;border:1px solid #ddd;border-radius:8px;font-size:1.4rem;">
+                    </div>
+                </div>
+                <div style="margin-bottom:15px;">
+                    <label style="display:block;margin-bottom:5px;font-weight:600;color:var(--black);">Email</label>
+                    <input type="email" name="email" style="width:100%;padding:10px 15px;border:1px solid #ddd;border-radius:8px;font-size:1.4rem;">
+                </div>
+                <div style="margin-bottom:15px;">
+                    <label style="display:block;margin-bottom:5px;font-weight:600;color:var(--black);">Service / Work Type *</label>
+                    <select name="project-type" required id="contact-project-type-popup" style="width:100%;padding:10px 15px;border:1px solid #ddd;border-radius:8px;font-size:1.4rem;background:var(--white);">
+                        <option value="">Select a service...</option>
+                        <option value="custom-furniture">Custom Furniture</option>
+                        <option value="furniture-repair">Furniture Repair</option>
+                        <option value="interior-design">Interior Design</option>
+                        <option value="furniture-restoration">Furniture Restoration</option>
+                        <option value="modular-kitchen">Modular Kitchen</option>
+                        <option value="office-furniture">Office Furniture</option>
+                        <option value="outdoor-furniture">Outdoor Furniture</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:15px;">
+                    <label style="display:block;margin-bottom:5px;font-weight:600;color:var(--black);">Your Message *</label>
+                    <textarea name="message" rows="5" required style="width:100%;padding:10px 15px;border:1px solid #ddd;border-radius:8px;font-size:1.4rem;resize:vertical;"></textarea>
+                </div>
+                <button type="submit" class="btn" id="contact-submit-btn" style="width:100%;padding:12px;font-size:1.5rem;">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+            </form>
+        </div>
+    `;
+
+    contactModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Submit contact form popup
+function submitContactFormPopup(e) {
+    e.preventDefault();
+
+    var btn = document.getElementById('contact-submit-btn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    btn.disabled = true;
+
+    var form = document.getElementById('contact-form-popup');
+    var formData = new FormData(form);
+
+    fetch('https://script.google.com/macros/s/AKfycbwTz2aEc6P-9CiNiEA9IRna5hfivA0YdXaLC_zk6twkkNIFVPLfKenlh2IwuyNLfM-M7g/exec', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Thank you! We will contact you within 24 hours.');
+        closeContactForm();
+    })
+    .catch(error => {
+        // With mode: no-cors, we won't get a response, but data should still be sent
+        alert('Thank you! We will contact you within 24 hours.');
+        closeContactForm();
+    });
+}
+
+async function loadContactProjectTypes() {
+    const data = await loadJSON('data/footer.json');
+    if (!data) return;
+    const select = document.getElementById('contact-project-type-popup');
+    if (select) {
+        select.innerHTML = data.projectTypes.map(type =>
+            `<option value="${type.toLowerCase().replace(/\s+/g, '-')}">${type}</option>`
+        ).join('');
+    }
+}
+
+function closeContactForm() {
+    const modal = document.getElementById('contact-modal');
+    if (modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
 }
 
 function closeBlogModal() {
