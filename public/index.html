@@ -26,6 +26,16 @@
 
 <body>
 
+    <!-- Delivery Info Banner -->
+    <div class="delivery-banner" id="delivery-banner">
+        <div class="delivery-content">
+            <i class="fas fa-truck"></i>
+            <span>Free Delivery on Orders Above ₹5,000 | Pan-India Shipping Available</span>
+            <a href="tel:+919321812823"><i class="fas fa-phone"></i> Call Now</a>
+        </div>
+        <button class="banner-close" onclick="closeDeliveryBanner()">&times;</button>
+    </div>
+
     <!-- header -->
 
     <section class="header">
@@ -40,11 +50,26 @@
             <div id="menu-btn" class="fas fa-bars"></div>
         </div> -->
         <div class="icons">
+            <div id="search-btn" class="fas fa-search" onclick="toggleSearch(); return false;"></div>
             <div id="cart-btn" class="fas fa-shopping-cart">
                 <span id="cart-count"></span>
-            </div> <!-- Shopping Cart Icon -->
-            <div id="account-btn" class="fas fa-user"></div> <!-- Account Icon -->
+            </div>
+            <div id="account-btn" class="fas fa-user"></div>
             <div id="menu-btn" class="fas fa-bars"></div>
+        </div>
+
+        <!-- Search Overlay -->
+        <div class="search-overlay" id="search-overlay">
+            <div class="search-container">
+                <div class="search-header">
+                    <h3>Search Products</h3>
+                    <span class="search-close" onclick="toggleSearch()">&times;</span>
+                </div>
+                <input type="text" id="search-input" placeholder="Search for furniture..." onkeyup="searchProducts()">
+                <div class="search-results" id="search-results">
+                    <p class="search-hint">Start typing to search...</p>
+                </div>
+            </div>
         </div>
 
 
@@ -143,7 +168,6 @@
     <!-- services -->
 
     <!-- product -->
-
     <section class="product" id="product">
 
         <h1 class="heading" id="heading">our <span> products</span></h1>
@@ -181,6 +205,26 @@
     </section>
 
     <!-- blog -->
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <h1 class="heading">Frequently Asked <span>Questions</span></h1>
+        <div class="faq-container" id="faq-container"></div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <h1 class="heading">What Our <span>Customers Say</span></h1>
+        <div class="swiper testimonials-slider">
+            <div class="swiper-wrapper" id="testimonials-wrapper"></div>
+        </div>
+    </section>
+
+    <!-- Before/After Gallery -->
+    <section class="before-after" id="beforeafter">
+        <h1 class="heading">Our <span>Transformation</span> Work</h1>
+        <div class="before-after-container" id="beforeafter-container"></div>
+    </section>
 
     <!-- contact -->
 
@@ -273,6 +317,67 @@
     <!-- Payment Modal -->
     <div class="service-modal" id="payment-modal">
         <div class="service-modal-content payment-modal-content" id="payment-modal-content"></div>
+    </div>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/919321812823?text=Hi%2C%20I%20am%20interested%20in%20your%20furniture" target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Chat Launcher Button -->
+    <div class="chat-launcher" id="chat-launcher" onclick="toggleChat()">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <!-- Newsletter Popup -->
+    <div class="newsletter-popup" id="newsletter-popup">
+        <div class="newsletter-content">
+            <span class="newsletter-close" onclick="closeNewsletter()">&times;</span>
+            <div class="newsletter-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <h2>Get 10% OFF!</h2>
+            <p>Subscribe to our newsletter and get an exclusive 10% discount on your first order.</p>
+            <form class="newsletter-form" onsubmit="submitNewsletter(event)">
+                <input type="email" id="newsletter-email" placeholder="Enter your email" required>
+                <button type="submit">
+                    <i class="fas fa-paper-plane"></i> Get Discount
+                </button>
+            </form>
+            <p class="newsletter-note">No spam, unsubscribe anytime.</p>
+        </div>
+    </div>
+
+    <!-- Product Quick View Modal -->
+    <div class="service-modal" id="quickview-modal">
+        <div class="service-modal-content" id="quickview-content"></div>
+    </div>
+
+    <!-- Live Chat Widget -->
+    <div class="chat-widget" id="chat-widget">
+        <div class="chat-header" onclick="toggleChat()">
+            <div class="chat-header-info">
+                <i class="fas fa-comments"></i>
+                <span>Live Chat</span>
+            </div>
+            <i class="fas fa-chevron-up" id="chat-arrow"></i>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-message bot">
+                    <p>Hi! How can we help you today?</p>
+                </div>
+            </div>
+            <form class="chat-form" onsubmit="sendChatMessage(event)">
+                <input type="text" id="chat-input" placeholder="Type your message...">
+                <button type="submit"><i class="fas fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Size Guide Modal -->
+    <div class="service-modal" id="sizeguide-modal">
+        <div class="service-modal-content" id="sizeguide-content"></div>
     </div>
 
     <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>

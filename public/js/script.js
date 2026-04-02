@@ -21,6 +21,11 @@ document.querySelector('#cart-btn').onclick = () => {
     shoppingcart.classList.add('active');
 };
 
+// Search button handler
+document.querySelector('#search-btn').onclick = () => {
+    toggleSearch();
+};
+
 document.querySelector('#close').onclick = () => {
     shoppingcart.classList.remove('active');
 };
@@ -131,7 +136,7 @@ function openAllProducts() {
                 ${allProducts.map(product => `
                     <div class="box">
                         <a href="#" class="fas fa-heart wishlist-btn" onclick="toggleWishlist(this); return false;"></a>
-                        <a href="#" class="fas fa-eye"></a>
+                        <a href="#" class="fas fa-search-plus" onclick="quickViewProduct(${product.id}); return false;" style="position:absolute;top:12px;right:12px;width:35px;height:35px;line-height:35px;font-size:14px;background:white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.1);text-align:center;cursor:pointer;z-index:10;"></a>
                         <img src="${product.image}" alt="${product.name}">
                         <h3>${product.name}</h3>
                         ${renderStars(product.rating)}
@@ -149,6 +154,12 @@ function openAllProducts() {
 
     productModal.classList.add('active');
     document.body.style.overflow = 'hidden';
+}
+
+function closeProductModal() {
+    const modal = document.getElementById('product-modal');
+    if (modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
 }
 
 function closeProductModal() {
@@ -1401,6 +1412,590 @@ function initTeamSwiper() {
 }
 
 // ============================================================
+// Search Functionality
+// ============================================================
+function toggleSearch() {
+    const searchOverlay = document.getElementById('search-overlay');
+    if (searchOverlay) {
+        searchOverlay.classList.toggle('active');
+        if (searchOverlay.classList.contains('active')) {
+            document.getElementById('search-input').focus();
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+}
+
+// Close search on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const searchOverlay = document.getElementById('search-overlay');
+        if (searchOverlay && searchOverlay.classList.contains('active')) {
+            toggleSearch();
+        }
+    }
+});
+
+// Close search on click outside
+document.addEventListener('click', (e) => {
+    const searchOverlay = document.getElementById('search-overlay');
+    const searchContainer = document.querySelector('.search-container');
+    if (searchOverlay && searchOverlay.classList.contains('active')) {
+        if (!searchContainer || !searchContainer.contains(e.target)) {
+            toggleSearch();
+        }
+    }
+});
+
+function searchProducts() {
+    const query = document.getElementById('search-input').value.toLowerCase().trim();
+    const resultsContainer = document.getElementById('search-results');
+
+    if (!query) {
+        resultsContainer.innerHTML = '<p class="search-hint">Start typing to search...</p>';
+        return;
+    }
+
+    if (!allProducts || allProducts.length === 0) {
+        resultsContainer.innerHTML = '<p class="search-no-results">No products found</p>';
+        return;
+    }
+
+    const filteredProducts = allProducts.filter(product =>
+        product.name.toLowerCase().includes(query) ||
+        (product.description && product.description.toLowerCase().includes(query))
+    );
+
+    if (filteredProducts.length === 0) {
+        resultsContainer.innerHTML = '<p class="search-no-results">No products match your search</p>';
+        return;
+    }
+
+    resultsContainer.innerHTML = filteredProducts.map(product => `
+        <div class="search-result-item" onclick="viewProduct(${product.id})">
+            <img src="${product.image}" alt="${product.name}">
+            <div class="search-result-info">
+                <h4>${product.name}</h4>
+                <div class="price">Rs.${product.price.toLocaleString()}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function viewProduct(productId) {
+    toggleSearch();
+    openAllProducts();
+}
+
+// ============================================================
+// Live Chat Widget
+// ============================================================
+function toggleChat() {
+    const chat = document.getElementById('chat-widget');
+    const launcher = document.getElementById('chat-launcher');
+    chat.classList.toggle('active');
+    if (chat.classList.contains('active')) {
+        launcher.classList.add('active');
+    } else {
+        launcher.classList.remove('active');
+    }
+}
+
+function sendChatMessage(e) {
+    e.preventDefault();
+    const input = document.getElementById('chat-input');
+    const message = input.value.trim();
+    if (!message) return;
+
+    const messages = document.getElementById('chat-messages');
+
+    // Add user message
+    messages.innerHTML += `<div class="chat-message user"><p>${message}</p></div>`;
+    input.value = '';
+
+    // Scroll to bottom
+    messages.scrollTop = messages.scrollHeight;
+
+    // Bot response
+    setTimeout(() => {
+        let botResponse = "Thanks for your message! We'll get back to you shortly. For immediate assistance, call us at +91 9321812823 or use WhatsApp!";
+
+        if (message.toLowerCase().includes('price') || message.toLowerCase().includes('cost')) {
+            botResponse = "Our furniture prices vary based on customization and materials. Please visit our Products section or call us for a quote!";
+        } else if (message.toLowerCase().includes('delivery')) {
+            botResponse = "We offer free delivery across Thane & Mumbai. Delivery time is 7-15 working days. Contact us for more details!";
+        } else if (message.toLowerCase().includes('warranty')) {
+            botResponse = "All our furniture comes with a 5-year warranty! We also offer repair services.";
+        }
+
+        messages.innerHTML += `<div class="chat-message bot"><p>${botResponse}</p></div>`;
+        messages.scrollTop = messages.scrollHeight;
+    }, 1000);
+}
+
+// ============================================================
+// Size Guide Modal
+// ============================================================
+function openSizeGuide() {
+    const modal = document.getElementById('sizeguide-modal');
+    const content = document.getElementById('sizeguide-content');
+
+    content.innerHTML = `
+        <div class="sizeguide-container">
+            <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;">
+                <h2>Size Guide</h2>
+                <span class="modal-close" onclick="closeSizeGuide()">&times;</span>
+            </div>
+            <div class="sizeguide-tabs">
+                <div class="sizeguide-tab active" onclick="switchSizeGuideTab('sofa', this)">Sofa</div>
+                <div class="sizeguide-tab" onclick="switchSizeGuideTab('bed', this)">Bed</div>
+                <div class="sizeguide-tab" onclick="switchSizeGuideTab('dining', this)">Dining</div>
+                <div class="sizeguide-tab" onclick="switchSizeGuideTab('mattress', this)">Mattress</div>
+            </div>
+            <div class="sizeguide-content active" id="sizeguide-sofa">
+                <table class="sizeguide-table">
+                    <thead>
+                        <tr><th>Size</th><th>Seating</th><th>Dimensions (L×D×H)</th><th>Best For</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>2 Seater</td><td>2 People</td><td>150×90×85 cm</td><td>Small Living Room</td></tr>
+                        <tr><td>3 Seater</td><td>3 People</td><td>200×90×85 cm</td><td>Medium Living Room</td></tr>
+                        <tr><td>3+1 Seater</td><td>4 People</td><td>240×90×85 cm</td><td>Large Living Room</td></tr>
+                        <tr><td>L-Shape</td><td>6+ People</td><td>280×180×85 cm</td><td>Family Room</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="sizeguide-content" id="sizeguide-bed">
+                <table class="sizeguide-table">
+                    <thead>
+                        <tr><th>Size</th><th>Dimensions</th><th>Best For</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Single</td><td>198×91×45 cm</td><td>Kids Room, Guest Room</td></tr>
+                        <tr><td>Double</td><td>198×137×45 cm</td><td>Teen Room</td></tr>
+                        <tr><td>Queen</td><td>198×152×45 cm</td><td>Master Bedroom</td></tr>
+                        <tr><td>King</td><td>198×183×45 cm</td><td>Large Master Bedroom</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="sizeguide-content" id="sizeguide-dining">
+                <table class="sizeguide-table">
+                    <thead>
+                        <tr><th>Size</th><th>Dimensions</th><th>Seating</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>4 Seater</td><td>120×75 cm</td><td>Small Family</td></tr>
+                        <tr><td>6 Seater</td><td>150×90 cm</td><td>Medium Family</td></tr>
+                        <tr><td>8 Seater</td><td>180×90 cm</td><td>Large Family</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="sizeguide-content" id="sizeguide-mattress">
+                <table class="sizeguide-table">
+                    <thead>
+                        <tr><th>Size</th><th>Dimensions</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Single</td><td>72×30×6 inches</td></tr>
+                        <tr><td>Double</td><td>54×75×6 inches</td></tr>
+                        <tr><td>Queen</td><td>60×78×8 inches</td></tr>
+                        <tr><td>King</td><td>72×78×8 inches</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="sizeguide-note">
+                <i class="fas fa-info-circle"></i>
+                Not sure about the right size? Call us at <strong>+91 9321812823</strong> and our experts will help you choose!
+            </div>
+        </div>
+    `;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSizeGuide() {
+    const modal = document.getElementById('sizeguide-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+function switchSizeGuideTab(tab, el) {
+    document.querySelectorAll('.sizeguide-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sizeguide-content').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('sizeguide-' + tab).classList.add('active');
+}
+
+// Close size guide on outside click
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('sizeguide-modal');
+    if (modal && modal.classList.contains('active') && e.target === modal) {
+        closeSizeGuide();
+    }
+});
+
+// ============================================================
+// Product Quick View
+// ============================================================
+function quickViewProduct(productId) {
+    const product = allProducts.find(p => p.id === productId);
+    if (!product) return;
+
+    const modal = document.getElementById('quickview-modal');
+    const content = document.getElementById('quickview-content');
+
+    const stars = renderStars(product.rating);
+
+    content.innerHTML = `
+        <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;">
+            <h2>Product Details</h2>
+            <span class="modal-close" onclick="closeQuickView()">&times;</span>
+        </div>
+        <div class="quickview-container">
+            <div class="quickview-image">
+                <img src="${product.image}" alt="${product.name}">
+            </div>
+            <div class="quickview-info">
+                <h2>${product.name}</h2>
+                ${stars}
+                <div class="price">
+                    Rs.${product.price.toLocaleString()}
+                    <span>Rs.${product.originalPrice.toLocaleString()}</span>
+                </div>
+                <p class="description">${product.description || 'Premium quality furniture crafted with care. Perfect for your home.'}</p>
+                <div class="quickview-actions">
+                    <button class="btn" onclick="addToCart(${product.id}); closeQuickView();">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                    <button class="btn" onclick="openContactForm();">
+                        <i class="fas fa-phone"></i> Enquire
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeQuickView() {
+    const modal = document.getElementById('quickview-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Close quick view on outside click
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('quickview-modal');
+    if (modal && modal.classList.contains('active') && e.target === modal) {
+        closeQuickView();
+    }
+});
+
+// Close quick view on Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeQuickView();
+});
+
+// ============================================================
+// Before/After Gallery
+// ============================================================
+const beforeAfterData = [
+    {
+        title: "Old Sofa Restoration",
+        description: "Reupholstered and restored this vintage sofa to its former glory.",
+        before: "images/product-2.jpg",
+        after: "images/product.jpg"
+    },
+    {
+        title: "Dining Table Makeover",
+        description: "Custom dining table with premium polish finish.",
+        before: "images/product-3.jpg",
+        after: "images/product-5.jpg"
+    },
+    {
+        title: "Bedroom Set Design",
+        description: "Complete bedroom transformation with modular wardrobe.",
+        before: "images/product-8.png",
+        after: "images/product-11.png"
+    }
+];
+
+function renderBeforeAfter() {
+    const container = document.getElementById('beforeafter-container');
+    if (!container) return;
+
+    container.innerHTML = beforeAfterData.map((item, index) => `
+        <div class="before-after-card">
+            <div class="before-after-images" id="beforeafter-${index}">
+                <img src="${item.before}" alt="Before" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;">
+                <div class="before-after-overlay">
+                    <div class="before-after-half" style="position:absolute;top:0;left:0;width:50%;height:100%;overflow:hidden;">
+                        <img src="${item.after}" alt="After" style="position:absolute;top:0;left:0;width:200%;height:100%;object-fit:cover;">
+                    </div>
+                </div>
+                <div class="before-after-slider" style="left:50%;"></div>
+            </div>
+            <div class="before-after-info">
+                <h3>${item.title}</h3>
+                <p>${item.description}</p>
+                <span class="before-after-badge">Restoration</span>
+            </div>
+        </div>
+    `).join('');
+
+    // Initialize sliders after DOM is ready
+    setTimeout(initBeforeAfterSliders, 100);
+}
+
+function initBeforeAfterSliders() {
+    document.querySelectorAll('.before-after-images').forEach(container => {
+        const slider = container.querySelector('.before-after-slider');
+        const overlay = container.querySelector('.before-after-half');
+
+        let isDragging = false;
+
+        const updatePosition = (x) => {
+            const rect = container.getBoundingClientRect();
+            let pos = ((x - rect.left) / rect.width) * 100;
+            pos = Math.max(5, Math.min(95, pos));
+            slider.style.left = pos + '%';
+            overlay.style.width = pos + '%';
+        };
+
+        slider.addEventListener('mousedown', () => isDragging = true);
+        document.addEventListener('mouseup', () => isDragging = false);
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) updatePosition(e.clientX);
+        });
+
+        // Touch support
+        slider.addEventListener('touchstart', () => isDragging = true);
+        document.addEventListener('touchend', () => isDragging = false);
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) updatePosition(e.touches[0].clientX);
+        });
+    });
+}
+
+// ============================================================
+// Testimonials Section
+// ============================================================
+const testimonialsData = [
+    {
+        name: "Priya Sharma",
+        location: "Thane, Mumbai",
+        rating: 5,
+        text: "Absolutely love the custom dining table we ordered! The quality is exceptional and the delivery was on time. Highly recommend Ananya House of Furniture!",
+        image: "images/team-1.png"
+    },
+    {
+        name: "Rajesh Patel",
+        location: "Mira Road, Mumbai",
+        rating: 5,
+        text: "Got my bedroom set from here and it's stunning! The craftsmanship is top-notch. The team was very helpful throughout the process.",
+        image: "images/team-2.jpg"
+    },
+    {
+        name: "Anita Desai",
+        location: "Andheri, Mumbai",
+        rating: 5,
+        text: "Best furniture shop in Thane! I ordered a modular kitchen and it's perfect. Great quality at reasonable prices.",
+        image: "images/team-3.png"
+    },
+    {
+        name: "Vikram Singh",
+        location: "Mulund, Mumbai",
+        rating: 5,
+        text: "Amazing service and beautiful furniture. The custom sofa we ordered fits perfectly in our living room. Will definitely order again!",
+        image: "images/team-4.png"
+    },
+    {
+        name: "Meera Joshi",
+        location: "Bandra, Mumbai",
+        rating: 5,
+        text: "I ordered furniture for my new home and everything exceeded my expectations. Professional service and premium quality products.",
+        image: "images/team-5.png"
+    },
+    {
+        name: "Sunil Kumar",
+        location: "Dadar, Mumbai",
+        rating: 5,
+        text: "Great experience! The team understood our requirements perfectly and delivered exactly what we wanted. Worth every rupee!",
+        image: "images/team-6.png"
+    }
+];
+
+function renderTestimonials() {
+    const wrapper = document.getElementById('testimonials-wrapper');
+    if (!wrapper) return;
+
+    wrapper.innerHTML = testimonialsData.map(review => `
+        <div class="swiper-slide">
+            <div class="testimonial-card">
+                <img src="${review.image}" alt="${review.name}" class="testimonial-image">
+                <h3 class="testimonial-name">${review.name}</h3>
+                <p class="testimonial-location"><i class="fas fa-map-marker-alt"></i> ${review.location}</p>
+                <div class="testimonial-stars">
+                    ${'<i class="fas fa-star"></i>'.repeat(review.rating)}
+                </div>
+                <p class="testimonial-text">"${review.text}"</p>
+            </div>
+        </div>
+    `).join('');
+
+    // Initialize swiper if not already initialized
+    setTimeout(() => {
+        if (document.querySelector('.testimonials-slider') && !document.querySelector('.testimonials-slider').swiper) {
+            new Swiper(".testimonials-slider", {
+                autoplay: { delay: 5000, disableOnInteraction: false },
+                grabCursor: true,
+                loop: true,
+                spaceBetween: 20,
+                breakpoints: {
+                    0: { slidesPerView: 1 },
+                    768: { slidesPerView: 2 },
+                    991: { slidesPerView: 3 },
+                },
+            });
+        }
+    }, 100);
+}
+
+// ============================================================
+// FAQ Section
+// ============================================================
+const faqData = [
+    {
+        question: "What is your delivery time?",
+        answer: "Standard delivery takes 7-15 working days depending on the product and your location. Custom furniture may take 15-30 days. We provide free delivery across Thane and Mumbai."
+    },
+    {
+        question: "Do you offer warranty on furniture?",
+        answer: "Yes! All our furniture comes with a 5-year warranty covering manufacturing defects. We also offer warranty on wood and hardware for peace of mind."
+    },
+    {
+        question: "Can I customize my furniture?",
+        answer: "Absolutely! We specialize in custom furniture design. You can choose the size, material, color, and design as per your requirements. Contact us for a free consultation."
+    },
+    {
+        question: "Do you provide installation service?",
+        answer: "Yes, we provide free professional installation for all our products. Our team will deliver and install your furniture at your preferred time."
+    },
+    {
+        question: "What payment methods do you accept?",
+        answer: "We accept Cash on Delivery, UPI (Google Pay, PhonePe, Paytm), Credit/Debit Cards, and Bank Transfers. EMI options are also available."
+    },
+    {
+        question: "Do you have a return policy?",
+        answer: "We offer a 7-day replacement policy for damaged or defective products. Custom-made furniture is non-refundable but we ensure 100% quality assurance."
+    }
+];
+
+function renderFAQ() {
+    const container = document.getElementById('faq-container');
+    if (!container) return;
+
+    container.innerHTML = faqData.map((faq, index) => `
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <div class="faq-question">
+                <h3>${faq.question}</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>${faq.answer}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+function toggleFAQ(element) {
+    const allItems = document.querySelectorAll('.faq-item');
+    allItems.forEach(item => {
+        if (item !== element) {
+            item.classList.remove('active');
+        }
+    });
+    element.classList.toggle('active');
+}
+
+// ============================================================
+// Delivery Banner
+// ============================================================
+function closeDeliveryBanner() {
+    const banner = document.getElementById('delivery-banner');
+    if (banner) {
+        banner.classList.add('hidden');
+        // Remember user closed it for this session
+        sessionStorage.setItem('bannerClosed', 'true');
+    }
+}
+
+function checkDeliveryBanner() {
+    // Show banner only if not closed in this session
+    if (sessionStorage.getItem('bannerClosed') === 'true') {
+        const banner = document.getElementById('delivery-banner');
+        if (banner) banner.classList.add('hidden');
+    }
+}
+
+// ============================================================
+// Newsletter Popup
+// ============================================================
+function closeNewsletter() {
+    const popup = document.getElementById('newsletter-popup');
+    if (popup) {
+        popup.classList.remove('active');
+        document.body.style.overflow = '';
+        // Remember user closed it (don't show again in this session)
+        sessionStorage.setItem('newsletterShown', 'true');
+    }
+}
+
+function submitNewsletter(e) {
+    e.preventDefault();
+    const email = document.getElementById('newsletter-email').value;
+    // Here you would typically send to your backend
+    alert('Thank you for subscribing! Your 10% discount code will be sent to: ' + email);
+    sessionStorage.setItem('newsletterSubscribed', 'true');
+    closeNewsletter();
+}
+
+// Show newsletter popup after 5 seconds (only once per session)
+function checkNewsletterPopup() {
+    if (sessionStorage.getItem('newsletterShown') === 'true' ||
+        sessionStorage.getItem('newsletterSubscribed') === 'true') {
+        return; // Already shown or subscribed
+    }
+
+    setTimeout(() => {
+        const popup = document.getElementById('newsletter-popup');
+        if (popup) {
+            popup.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }, 5000);
+}
+
+// Close newsletter on click outside
+document.addEventListener('click', (e) => {
+    const popup = document.getElementById('newsletter-popup');
+    const content = document.querySelector('.newsletter-content');
+    if (popup && popup.classList.contains('active')) {
+        if (content && !content.contains(e.target)) {
+            closeNewsletter();
+        }
+    }
+});
+
+// ============================================================
 // Initialize all dynamic content on page load
 // ============================================================
 document.addEventListener('DOMContentLoaded', async () => {
@@ -1418,7 +2013,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderCart(),
         renderFooter(),
         renderProjectTypes(),
+        renderFAQ(),
+        renderTestimonials(),
+        renderBeforeAfter(),
     ]);
 
     updateCartCount();
+    checkNewsletterPopup();
+    checkDeliveryBanner();
 });
